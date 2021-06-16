@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<skill_window>
+	<background x="192" y="128" width="640" height="480" stretch="1">
+		<texture>ui_inGame2_skill_menu</texture>
+	</background>
+</skill_window>

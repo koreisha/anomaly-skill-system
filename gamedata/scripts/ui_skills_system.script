@@ -1,0 +1,40 @@
+local skills_gui = nil
+
+function on_key_press(key)
+    if not db.actor:alive() then return end
+
+    -- here you can change skills menu key
+    if (key == DIK_keys["DIK_B"]) and not skills_gui then
+		skills_gui = UISkills()
+		skills_gui:ShowDialog(true)
+    end
+end
+
+function on_key_release(key)
+	if not db.actor:alive() then return end
+	if (key == DIK_keys["DIK_B"]) and skills_gui then
+		skills_gui:HideDialog()
+		skills_gui = nil
+	end
+end
+--yee yee ass scripted UI
+class "UISkills" (CUIScriptWnd)
+
+function UISkills:__init()
+    super()
+    self:InitControls()
+end
+
+function UISkills:__finalize()
+end
+
+function UISkills:InitControls()
+    local xml = CScriptXmlInit()
+    xml:ParseFile("skill_window_test.xml")
+    xml:InitStatic("background", self)
+end
+
+function on_game_start()
+    RegisterScriptCallback("on_key_press", on_key_press)
+	RegisterScriptCallback("on_key_release", on_key_release)
+end
