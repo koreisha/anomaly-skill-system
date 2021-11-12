@@ -1,0 +1,17 @@
+<string_table>
+	<string id="st_player_skills_strength">
+		<text>Strength</text>
+	</string>
+	<string id="st_player_skills_endurance">
+		<text>Endurance</text>
+	</string>
+	<string id="st_player_skills_survival">
+		<text>Survival</text>
+	</string>
+	<string id="st_player_skills_scavenging">
+		<text>Scavenging</text>
+	</string>
+    <string id="st_haruka_skills_main">
+		<text>Character Skills</text>
+	</string>
+</string_table>

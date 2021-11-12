@@ -1,0 +1,86 @@
+local gt = game.translate_string
+
+local menu_key = DIK_keys.DIK_K
+
+function on_key_release(key)
+    if (key == menu_key) then
+        start()
+    end
+end
+
+GUI = nil
+function start()
+    hide_hud_inventory()
+
+    if (not GUI) then
+        GUI = UIHarukaSkills()
+    end
+
+    if (GUI) and (not GUI:IsShown()) then
+        GUI:ShowDialog(true)
+        Register_UI("UIHarukaSkills", "ui_haruka_skills")
+    end
+end
+
+class "UIHarukaSkills" (CUIScriptWnd)
+
+function UIHarukaSkills:__init() super()
+    self:InitControls()
+end
+
+function UIHarukaSkills:__finalize()
+end
+
+function UIHarukaSkills:InitControls()
+    self:SetAutoDelete(true)
+    self.xml = CScriptXmlInit()
+    local xml = self.xml
+    xml:ParseFile("ui_haruka_skills.xml")
+    self.dialog = xml:InitStatic("skills", self)
+    xml:InitFrame("skills:frame", self.dialog)
+    xml:InitStatic("skills:cap_main", self.dialog)
+    self.scroll = xml:InitScrollView("skills:scroll", self.dialog)
+    self.scroll:Clear()
+    local skills_levels = haru_skills.skills_levels
+    for skill, stats in pairs(skills_levels) do
+        local _st = xml:InitStatic("skills:st", nil)
+        local name = xml:InitStatic("skills:name", _st)
+        local level_percent = xml:InitStatic("skills:percent", _st)
+        local exp_bar = xml:InitProgressBar("skills:exp_bar", _st)
+		xml:InitStatic("skills:exp_bar_back", _st)
+        local level = stats.current_level
+        local current_exp = stats.experience
+        local required_exp = stats.requirement
+        local prev_requirement = stats.prev_requirement
+        local progress = (current_exp - prev_requirement)/(required_exp - prev_requirement)
+        name:TextControl():SetText(string.format("%s - lvl. %s", gt("st_player_skills_" .. skill), level))
+        exp_bar:SetProgressPos(progress)
+        level_percent:TextControl():SetText(string.format("%s%%", clamp((math.floor(progress * 100)),0,100)))
+        self.scroll:AddWindow(_st, true)
+        _st:SetAutoDelete(true)
+    end
+end
+
+function UIHarukaSkills:OnKeyboard(dik, keyboard_action)
+	local res = CUIScriptWnd.OnKeyboard(self,dik,keyboard_action)
+	if (res == false) then
+		local bind = dik_to_bind(dik)
+		if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
+			if bind == key_bindings.kQUIT then
+				self:Close()
+			end
+		end
+	end
+	return res
+end
+
+function UIHarukaSkills:Close()
+	self:HideDialog()
+	self:Show(false)
+    GUI = nil
+	Unregister_UI("UIHarukaSkills")
+end
+
+function on_game_start()
+	RegisterScriptCallback("on_key_release",on_key_release)
+end
