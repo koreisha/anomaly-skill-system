@@ -1,6 +1,6 @@
 <w>
     <file name = "ui\ui_haruka_skills">
-		<texture id = "ui_skills_progress_bar" 		            x="0"  y="0"   width="420" height="20"  />
-		<texture id = "ui_skills_progress_bar_background" 		x="0"  y="22"  width="420" height="20"  />
+		<texture id = "ui_skills_progress_bar_background" 		x="0"  y="0"  width="420" height="20"  />
+		<texture id = "ui_skills_background" 					x="0"  y="20"  width="512" height="512"  />
 	</file>
 </w>

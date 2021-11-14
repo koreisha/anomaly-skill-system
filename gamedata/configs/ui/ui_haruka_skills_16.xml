@@ -1,11 +1,11 @@
 <w>
 	<skills x="256" y="128" width="512" height="512" stretch="1">
-		<frame x="0" y="0" width="512" height="512" stretch="1">
-			<texture r="0" g="0" b="0" a="215">ui_icons_PDA_tooltips</texture>
-		</frame>
+		<background x="0" y="0" width="512" height="512" stretch="1">
+			<texture>ui_skills_background</texture>
+		</background>
 		
 		<cap_main x="0" y="10" width="512" height="30" stretch="1">
-			<text r="200" g="150" b="100" font="letterica25" align="c" vert_align="c">st_haruka_skills_main</text>
+			<text r="200" g="150" b="100" font="graffiti32" align="c" vert_align="c">st_haruka_skills_main</text>
 		</cap_main>
 
 		<scroll x="20" y="50" width="460" height="448" right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" vert_interval="0" always_show_scroll="0"/>
@@ -19,7 +19,7 @@
 		</exp_bar_back>
         <exp_bar x="0" y="40" width="420" height="20" horz="1" min="0" max="1" stretch="1">
 		    <progress>
-			    <texture>ui_skills_progress_bar</texture>
+			    <texture>ui\ui_haruka_skills_bar.dds</texture>
 		    </progress>
         </exp_bar>
 		<percent x="430" y="40" width="40" height="20" stretch="1">

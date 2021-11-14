@@ -1,8 +1,8 @@
 skills_levels = {
-    ["endurance"]   =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 500, base_requirement = 500, functor = level_up_endurance},
-    ["strength"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 500, base_requirement = 500, functor = level_up_strength},
-    ["survival"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 500, base_requirement = 500, functor = level_up_survival},
-    ["scavenging"]  =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 500, base_requirement = 500, functor = level_up_scavenging}
+    ["endurance"]   =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = level_up_endurance},
+    ["strength"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = level_up_strength},
+    ["survival"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = level_up_survival},
+    ["scavenging"]  =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = level_up_scavenging}
 }
 
 skills_stats = {
@@ -88,20 +88,15 @@ function update_endurance()
     exec_console_cmd("power_loss_bias " .. tostring(pwb))
     
     local speed_modifier = skills_stats["endurance"].speed_modifier
-    speed.add_speed("haruka_endurance_modifier_1_walk", speed_modifier, false, true)
+    speed.add_speed("haruka_endurance_modifier_walk", speed_modifier, false, true)
     speed.add_speed("haruka_endurance_modifier_sprint", speed_modifier, true, true)
 end
 
 function update_strength()
     local skill_weight = skills_stats["strength"].weight_modifier
 	local skill_weight_base = skills_stats["strength"].base_weight
-    local cw = math.ceil((game_difficulties.get_game_factor("weight") * skill_weight) + skill_weight_base)
-    local mww = cw + (math.ceil(cw / 5) * 2)
-
-    if (cw ~= db.actor:get_actor_max_weight()) then
-        db.actor:set_actor_max_weight(cw)
-        db.actor:set_actor_max_walk_weight(mww)
-    end
+    weight.add_weight("haruka_strength_modifier_base", skill_weight_base, true)
+    weight.multiply_weight("haruka_strength_modifier_mul", skill_weight, true)
 end
 
 local rank_table = {
