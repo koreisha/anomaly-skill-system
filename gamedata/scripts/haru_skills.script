@@ -1,13 +1,13 @@
 skills_levels = {
-    ["endurance"]   =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = level_up_endurance},
-    ["strength"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = level_up_strength},
-    ["survival"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = level_up_survival},
-    ["scavenging"]  =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = level_up_scavenging}
+    ["endurance"]   =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_endurance"},
+    ["strength"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_strength"},
+    ["survival"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_survival"},
+    ["scavenging"]  =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_scavenging"}
 }
 
 skills_stats = {
-    ["endurance"]   =   { speed_modifier = 0.75, power_loss = 0.6 , functor = update_endurance},
-    ["strength"]    =   { weight_modifier = 0.5, base_weight = 0, melee_damage = 0.85 , functor = update_strength},
+    ["endurance"]   =   { speed_modifier = 0.75, power_loss = 0.6 , functor = "haru_skills.update_endurance"},
+    ["strength"]    =   { weight_modifier = 0.5, base_weight = 0, melee_damage = 0.85 , functor = "haru_skills.update_strength"},
     ["survival"]    =   { resistance = 1.25 },
     ["scavenging"]  =   { scavenging_skill = -5 }
 }
@@ -157,14 +157,14 @@ function increase_stat(skill, stat, amount)
     skills_stats[skill][stat] = skills_stats[skill][stat] + amount
 end
 
-function level_up_skill(skill)
-    skills_levels[skill].current_level = skills_levels[skill].current_level + 1 
-    local skill = skills_levels[skill]
+function level_up_skill(name)
+    skills_levels[name].current_level = skills_levels[name].current_level + 1 
+    local skill = skills_levels[name]
     local req = skill.requirement
-    skills_levels[skill].prev_requirement = req
+    skills_levels[name].prev_requirement = req
     local base = skill.base_requirement
     local level = skill.current_level
-    skills_levels[skill].requirement = req + (base + (base * (level * 0.25)))
+    skills_levels[name].requirement = req + (base + (base * (level * 0.25)))
 end
 
 local updated = 0
@@ -175,15 +175,26 @@ function update_stats()
     updated = time_global() + interval
     for skill, stats in pairs(skills_stats) do
         if stats.functor then
-            stats.functor()
+            exec(stats.functor)
         end
     end
     for skill, stats in pairs(skills_levels) do
         if (stats.experience > stats.requirement) and (stats.current_level ~= stats.max_level) then
             level_up_skill(skill)
-            stats.functor()
+            exec(stats.functor)
         end
     end
+end
+
+function exec(str)
+    if str then
+		str = str_explode(str,"%.")
+		if str[1] and str[2] and _G[ str[1] ] and _G[ str[1] ][ str[2] ] then
+			_G[ str[1] ][ str[2] ]()
+		else
+			print_dbg("Could not exec function %s", str)
+		end
+	end
 end
 
 function save_state(m_data)

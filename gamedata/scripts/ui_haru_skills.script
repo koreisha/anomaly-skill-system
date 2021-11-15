@@ -37,8 +37,9 @@ function UIHarukaSkills:InitControls()
     local xml = self.xml
     xml:ParseFile("ui_haruka_skills.xml")
     self.dialog = xml:InitStatic("skills", self)
-    xml:InitFrame("skills:frame", self.dialog)
-    xml:InitStatic("skills:cap_main", self.dialog)
+    local background = xml:InitStatic("skills:background", self.dialog)
+    local cap_main = xml:InitStatic("skills:cap_main", self.dialog)
+	scale_ui(cap_main, true, background, "center")
     self.scroll = xml:InitScrollView("skills:scroll", self.dialog)
     self.scroll:Clear()
     local skills_levels = haru_skills.skills_levels
@@ -46,8 +47,8 @@ function UIHarukaSkills:InitControls()
         local _st = xml:InitStatic("skills:st", nil)
         local name = xml:InitStatic("skills:name", _st)
         local level_percent = xml:InitStatic("skills:percent", _st)
-        local exp_bar = xml:InitProgressBar("skills:exp_bar", _st)
 		xml:InitStatic("skills:exp_bar_back", _st)
+        local exp_bar = xml:InitProgressBar("skills:exp_bar", _st)
         local level = stats.current_level
         local current_exp = stats.experience
         local required_exp = stats.requirement
@@ -72,6 +73,30 @@ function UIHarukaSkills:OnKeyboard(dik, keyboard_action)
 		end
 	end
 	return res
+end
+
+function scale_ui(ele, adjust_x, anchor, anchor_point, parent_width)
+	p_width = parent_width or 1024
+	p_center = p_width/2
+	width = ele:GetWidth()
+	pos = ele:GetWndPos()
+	anchorpos = {}
+	anchorpos.left = pos.x
+	anchorpos.right = anchorpos.left + width
+	anchorpos.center = anchorpos.left + width/2
+	ratio = (device().height / device().width) / (768 / 1024)
+	xadjust = anchorpos.left
+	if adjust_x then
+		if anchor_point == "right" then
+			xadjust = p_width - (p_width - (anchor and anchorpos[anchor] or anchorpos.left))*ratio
+		elseif anchor_point == "center" then
+			xadjust = p_center - (p_center - (anchor and anchorpos[anchor] or anchorpos.left))*ratio
+		else
+			xadjust = ratio * (anchor and anchorpos[anchor] or anchorpos.left)
+		end
+	end
+	ele:SetWndSize(vector2():set(ele:GetWidth() * ratio, ele:GetHeight()))
+	ele:SetWndPos( vector2():set(xadjust , pos.y ) )
 end
 
 function UIHarukaSkills:Close()
