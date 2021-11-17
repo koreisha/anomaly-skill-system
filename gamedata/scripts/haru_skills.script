@@ -20,7 +20,7 @@ end
 function level_up_strength()
     increase_stat("strength", "weight_modifier", 0.065)
     increase_stat("strength", "melee_damage", 0.025)
-	increase_stat("strength", "base_weight", 1.5)
+	increase_stat("strength", "base_weight", 0.5)
 end
 
 function level_up_survival()
@@ -35,6 +35,8 @@ local death_ini = nil
 local math_random = math.random
 local sf = string.format
 local always_keep_item = {}
+local gt = game.translate_string
+local parse_keys = utils_data.parse_string_keys
 
 local exp_multiplier = 1 -- would be mcm option later I guess
 
@@ -157,6 +159,15 @@ function increase_stat(skill, stat, amount)
     skills_stats[skill][stat] = skills_stats[skill][stat] + amount
 end
 
+local colors = {
+    ["clr_green"] = "%" .. "%c[255,178,236,93]",
+    ["clr_cyan"] = "%" .. "%c[255,119,181,254]",
+    ["clr_red"] = "%" .. "%c[255,175,43,30]",
+    ["clr_yellow"] = "%" .. "%c[255,250,218,94]",
+    ["clr_white"] = "%" .. "%c[255,220,220,220]",
+    ["clr_purple"] = "%" .. "%c[255,138,43,226]"
+}
+
 function level_up_skill(name)
     skills_levels[name].current_level = skills_levels[name].current_level + 1 
     local skill = skills_levels[name]
@@ -165,6 +176,14 @@ function level_up_skill(name)
     local base = skill.base_requirement
     local level = skill.current_level
     skills_levels[name].requirement = req + (base + (base * (level * 0.25)))
+
+    local msg = parse_keys(gt("st_new_level_" .. name) , colors)
+    local header = parse_keys(gt("st_new_level_header"), {
+        ["name"] = gt("st_player_skills_" .. name),
+        ["level"] = level
+    })
+    db.actor:give_game_news(header, msg, db.actor:character_icon(), 0, 10000)
+    xr_sound.set_sound_play(AC_ID, "pda_tips")
 end
 
 local updated = 0

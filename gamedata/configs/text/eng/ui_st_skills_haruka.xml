@@ -14,4 +14,19 @@
     <string id="st_haruka_skills_main">
 		<text>Character Skills</text>
 	</string>
+	<string id="st_new_level_endurance">
+		<text>$clr_green• $clr_whiteStamina consumption improved\n$clr_cyan• $clr_whiteSpeed improved</text>
+	</string>
+	<string id="st_new_level_strength">
+		<text>$clr_red• $clr_whiteMelee damage improved\n$clr_yellow• $clr_whiteCarry weight improved</text>
+	</string>
+	<string id="st_new_level_scavenging">
+		<text>$clr_purple• $clr_whiteScavenging skill improved</text>
+	</string>
+	<string id="st_new_level_survival">
+		<text>$clr_cyan• $clr_whiteResistance improved</text>
+	</string>
+	<string id="st_new_level_header">
+		<text>$name lvl. $level gained.</text>
+	</string>
 </string_table>
