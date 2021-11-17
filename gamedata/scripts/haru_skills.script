@@ -8,7 +8,7 @@ skills_levels = {
 skills_stats = {
     ["endurance"]   =   { speed_modifier = 0.75, power_loss = 0.6 , functor = "haru_skills.update_endurance"},
     ["strength"]    =   { weight_modifier = 0.5, base_weight = 0, melee_damage = 0.85 , functor = "haru_skills.update_strength"},
-    ["survival"]    =   { resistance = 1.25 },
+    ["survival"]    =   { resistance = 1.25, bleed_restore = 0, functor = "haru_skills.update_survival" },
     ["scavenging"]  =   { scavenging_skill = -5 }
 }
 
@@ -25,6 +25,7 @@ end
 
 function level_up_survival()
     increase_stat("survival", "resistance", - 0.035)
+    increase_stat("survival", "bleed_restore", 0.00005)
 end
 
 function level_up_scavenging()
@@ -40,7 +41,7 @@ local parse_keys = utils_data.parse_string_keys
 
 local exp_multiplier = 1 -- would be mcm option later I guess
 
-function actor_on_footstep()
+function get_max_weight_coef()
     local actor = db.actor
     local tot_weight = actor:get_total_weight()
     local max_weight = actor:get_actor_max_weight()
@@ -60,8 +61,17 @@ function actor_on_footstep()
             max_weight = max_weight + booster_value
         end
     end)
+    return tot_weight / max_weight
+end
 
-    local coef = tot_weight / max_weight
+function actor_on_jump()
+    local coef = get_max_weight_coef()
+    increase_skill("endurance",  clamp((1 - coef) * 10, 0, 999))
+    increase_skill("strength", clamp(coef * 10, 0, 999))
+end
+
+function actor_on_footstep()
+    local coef = get_max_weight_coef()
     increase_skill("endurance",  clamp((1 - coef) * 0.5, 0, 999))
     increase_skill("strength", clamp(0.5 * coef, 0, 999))
 end
@@ -99,6 +109,10 @@ function update_strength()
 	local skill_weight_base = skills_stats["strength"].base_weight
     weight.add_weight("haruka_strength_modifier_base", skill_weight_base, true)
     weight.multiply_weight("haruka_strength_modifier_mul", skill_weight, true)
+end
+
+function update_survival()
+    db.actor.bleeding = clamp(actor.bleeding - skills_stats["survival"].bleed_restore, 0, 1)
 end
 
 local rank_table = {
