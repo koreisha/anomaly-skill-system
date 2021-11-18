@@ -1,10 +1,11 @@
+-- every param in this table NEEDS to be defined
 skills_levels = {
     ["endurance"]   =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_endurance"},
     ["strength"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_strength"},
     ["survival"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_survival"},
     ["scavenging"]  =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_scavenging"}
 }
-
+-- params in this table are optional and are up to a modder
 skills_stats = {
     ["endurance"]   =   { speed_modifier = 0.75, power_loss = 0.6 , functor = "haru_skills.update_endurance"},
     ["strength"]    =   { weight_modifier = 0.5, base_weight = 0, melee_damage = 0.85 , functor = "haru_skills.update_strength"},
@@ -12,24 +13,29 @@ skills_stats = {
     ["scavenging"]  =   { scavenging_skill = -5 }
 }
 
+-- I guess this is not the best way to handle things, but I don't wanna overthink this
 function level_up_endurance()
-    increase_stat("endurance", "speed_modifier", 0.025)
-    increase_stat("endurance", "power_loss", - 0.025)
+    local level = skills_levels.endurance.current_level
+    set_stat("endurance", "speed_modifier", 0.75 + (0.025 * level))
+    set_stat("endurance", "power_loss", 0.6 + (-0.025 * level))
 end
 
 function level_up_strength()
-    increase_stat("strength", "weight_modifier", 0.065)
-    increase_stat("strength", "melee_damage", 0.025)
-	increase_stat("strength", "base_weight", 0.5)
+    local level = skills_levels.strength.current_level
+    set_stat("strength", "weight_modifier", 0.5 + (0.065 * level))
+    set_stat("strength", "melee_damage", 0.85 + (0.025 * level))
+	set_stat("strength", "base_weight", 0.5 * level)
 end
 
 function level_up_survival()
-    increase_stat("survival", "resistance", - 0.035)
-    increase_stat("survival", "bleed_restore", 0.00005)
+    local level = skills_levels.survival.current_level
+    set_stat("survival", "resistance", 1.25 + (- 0.035 * level))
+    set_stat("survival", "bleed_restore", 0.00005 * level)
 end
 
 function level_up_scavenging()
-    increase_stat("scavenging", "scavenging_skill", 1.35)
+    local level = skills_levels.scavenging.current_level
+    set_stat("scavenging", "scavenging_skill", 1.35 * level)
 end
 
 local death_ini = nil
@@ -39,7 +45,7 @@ local always_keep_item = {}
 local gt = game.translate_string
 local parse_keys = utils_data.parse_string_keys
 
-local exp_multiplier = 1 -- would be mcm option later I guess
+exp_multiplier = 1
 
 function get_max_weight_coef()
     local actor = db.actor
@@ -169,8 +175,8 @@ function increase_skill(skill, amount)
     skills_levels[skill].experience = skills_levels[skill].experience + (amount  * exp_multiplier)
 end
 
-function increase_stat(skill, stat, amount)
-    skills_stats[skill][stat] = skills_stats[skill][stat] + amount
+function set_stat(skill, stat, amount)
+    skills_stats[skill][stat] = amount
 end
 
 local colors = {
@@ -190,7 +196,7 @@ function level_up_skill(name)
     local base = skill.base_requirement
     local level = skill.current_level
     skills_levels[name].requirement = req + (base + (base * (level * 0.25)))
-
+    exec(skill.functor)
     local msg = parse_keys(gt("st_new_level_" .. name) , colors)
     local header = parse_keys(gt("st_new_level_header"), {
         ["name"] = gt("st_player_skills_" .. name),
@@ -214,7 +220,6 @@ function update_stats()
     for skill, stats in pairs(skills_levels) do
         if (stats.experience > stats.requirement) and (stats.current_level ~= stats.max_level) then
             level_up_skill(skill)
-            exec(stats.functor)
         end
     end
 end
@@ -241,6 +246,10 @@ function load_state(m_data)
     end
     if m_data.skills_stats then
         skills_levels = m_data.skills_levels
+    end
+    -- update stats, in case new stat was added or some shit is wrong
+    for skill, stats in pairs(skills_levels) do
+        exec(stats.functor)
     end
 end
 
