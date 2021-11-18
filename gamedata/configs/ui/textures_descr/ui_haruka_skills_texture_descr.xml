@@ -1,7 +1,13 @@
 <w>
-    <file name = "ui\ui_haruka_skills">
-		<texture id = "ui_skills_progress_bar_background" 		x="0"  y="0"  width="420" height="20"  />
-		<texture id = "ui_skills_background" 					x="0"  y="20"  width="512" height="512" />
-		<texture id = "ui_skills_cap_main"                      x="0"  y="532" width="249" height="32" />
+	<file name = "ui\ui_haruka_skills">
+		<texture id = "ui_skills_progress_bar_background" x="0" y="0" width="420" height="20" />
+		<texture id = "ui_skills_background" x="0" y="20" width="512" height="512" />
+		<texture id = "ui_skills_cap_main" x="0" y="532" width="249" height="32" />
+	</file>
+	<file name ="ui\ui_icons_skills">
+		<texture id = "ui_skills_icon_strength" x="0" y="0" width="123" height="87" />
+		<texture id = "ui_skills_icon_endurance" x="123" y="0" width="123" height="87" />
+		<texture id = "ui_skills_icon_scavenging" x="0" y="87" width="123" height="87" />
+		<texture id = "ui_skills_icon_survival" x="123" y="87" width="123" height="87" />
 	</file>
 </w>

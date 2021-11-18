@@ -112,7 +112,7 @@ function update_strength()
 end
 
 function update_survival()
-    db.actor.bleeding = clamp(actor.bleeding - skills_stats["survival"].bleed_restore, 0, 1)
+    db.actor.bleeding = clamp(db.actor.bleeding - skills_stats["survival"].bleed_restore, 0, 1)
 end
 
 local rank_table = {
@@ -196,7 +196,7 @@ function level_up_skill(name)
         ["name"] = gt("st_player_skills_" .. name),
         ["level"] = level
     })
-    db.actor:give_game_news(header, msg, db.actor:character_icon(), 0, 10000)
+    db.actor:give_game_news(header, msg, "ui_skills_icon_" .. name, 0, 10000)
     xr_sound.set_sound_play(AC_ID, "pda_tips")
 end
 
