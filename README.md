@@ -22,4 +22,4 @@ Player starts with decrease in these respective stats, so start of the game is h
 Stats can be checked by pressing K to open skills menu
 
 # Changelog:
-19-11-2021 - Release
+20-11-2021 - Release

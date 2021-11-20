@@ -44,8 +44,7 @@ local sf = string.format
 local always_keep_item = {}
 local gt = game.translate_string
 local parse_keys = utils_data.parse_string_keys
-
-exp_multiplier = 1
+options = {}
 
 function get_max_weight_coef()
     local actor = db.actor
@@ -172,7 +171,8 @@ function scavanger_effect(npc)
 end
 
 function increase_skill(skill, amount)
-    skills_levels[skill].experience = skills_levels[skill].experience + (amount  * exp_multiplier)
+	local key = "exp_multiplier_" .. skill
+    skills_levels[skill].experience = skills_levels[skill].experience + (amount  * options[key])
 end
 
 function set_stat(skill, stat, amount)
@@ -247,10 +247,18 @@ function load_state(m_data)
     if m_data.skills_stats then
         skills_levels = m_data.skills_levels
     end
-    -- update stats, in case new stat was added or some shit is wrong
+    -- update stats, in case new stat was added or something is wrong
     for skill, stats in pairs(skills_levels) do
         exec(stats.functor)
     end
+end
+local get_config = haru_skills_mcm.get_config
+
+function on_option_change()
+    options["exp_multiplier_strength"] = get_config("exp_multiplier_strength")
+    options["exp_multiplier_endurance"] = get_config("exp_multiplier_endurance")
+    options["exp_multiplier_scavenging"] = get_config("exp_multiplier_scavenging")
+    options["exp_multiplier_survival"] = get_config("exp_multiplier_survival")
 end
 
 function on_game_start()
@@ -262,6 +270,8 @@ function on_game_start()
     RegisterScriptCallback("load_state", load_state)
     RegisterScriptCallback("actor_on_update", update_stats)
     RegisterScriptCallback("npc_on_death_callback", npc_on_death_callback)
+    RegisterScriptCallback("on_option_change", on_option_change)
+	on_option_change()
     RegisterScriptCallback("on_game_load", function()
         -- same validation as in death manager
         death_ini = itms_manager.ini_death

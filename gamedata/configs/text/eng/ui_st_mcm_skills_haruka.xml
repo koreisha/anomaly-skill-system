@@ -1,0 +1,20 @@
+<string_table>
+	<string id="ui_mcm_skill_system_exp_multiplier_strength">
+        <text>Strength exp multiplier</text>
+    </string>
+    <string id="ui_mcm_skill_system_exp_multiplier_endurance">
+        <text>Endurance exp multiplier</text>
+    </string>
+    <string id="ui_mcm_skill_system_exp_multiplier_scavenging">
+        <text>Scavenging exp multiplier</text>
+    </string>
+    <string id="ui_mcm_skill_system_exp_multiplier_survival">
+        <text>Survival exp multiplier</text>
+    </string>
+    <string id="ui_mcm_skill_system_title">
+        <text>Skill System Configuration</text>
+    </string>
+     <string id="ui_mcm_menu_skill_system">
+        <text>Skills</text>
+    </string>
+</string_table>
