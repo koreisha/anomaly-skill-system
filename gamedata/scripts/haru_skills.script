@@ -117,7 +117,7 @@ function update_strength()
 end
 
 function update_survival()
-    db.actor.bleeding = clamp(db.actor.bleeding - skills_stats["survival"].bleed_restore, 0, 1)
+    --deprecated
 end
 
 local rank_table = {
