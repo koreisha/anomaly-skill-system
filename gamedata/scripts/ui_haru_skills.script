@@ -2,13 +2,23 @@ local gt = game.translate_string
 
 local menu_key = DIK_keys.DIK_K
 
+local K_Timer   = false
+function keybind_pass()
+	-- I added this to prevent inventory closing after starting because of release keybind
+	if (K_Timer and (time_global() > K_Timer + 200)) or (not K_Timer) then
+		K_Timer = time_global()
+		return true
+	end
+	return false
+end
+
+GUI = nil
 function on_key_release(key)
     if (key == menu_key) then
         start()
     end
 end
 
-GUI = nil
 function start()
     hide_hud_inventory()
 
@@ -16,7 +26,7 @@ function start()
         GUI = UIHarukaSkills()
     end
 
-    if (GUI) and (not GUI:IsShown()) then
+    if (GUI) and (not GUI:IsShown()) and keybind_pass() then
         GUI:ShowDialog(true)
         Register_UI("UIHarukaSkills", "ui_haruka_skills")
     end
@@ -67,7 +77,11 @@ function UIHarukaSkills:OnKeyboard(dik, keyboard_action)
 	if (res == false) then
 		local bind = dik_to_bind(dik)
 		if keyboard_action == ui_events.WINDOW_KEY_PRESSED then
-			if bind == key_bindings.kQUIT then
+			if dik == menu_key then
+				if keybind_pass() then
+					self:Close()
+				end
+			elseif bind == key_bindings.kQUIT then
 				self:Close()
 			end
 		end
