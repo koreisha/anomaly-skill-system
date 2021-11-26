@@ -7,7 +7,7 @@ skills_levels = {
 }
 -- params in this table are optional and are up to a modder
 skills_stats = {
-    ["endurance"]   =   { speed_modifier = 0.75, power_loss = 0.6 , functor = "haru_skills.update_endurance"},
+    ["endurance"]   =   { speed_modifier = 0.85, power_loss = 0.6 , functor = "haru_skills.update_endurance"},
     ["strength"]    =   { weight_modifier = 0.5, base_weight = 0, melee_damage = 0.85 , functor = "haru_skills.update_strength"},
     ["survival"]    =   { resistance = 1.25, bleed_restore = 0, functor = "haru_skills.update_survival" },
     ["scavenging"]  =   { scavenging_skill = -5 }
@@ -16,7 +16,7 @@ skills_stats = {
 -- I guess this is not the best way to handle things, but I don't wanna overthink this
 function level_up_endurance()
     local level = skills_levels.endurance.current_level
-    set_stat("endurance", "speed_modifier", 0.75 + (0.025 * level))
+    set_stat("endurance", "speed_modifier", 0.75 + (0.02 * level))
     set_stat("endurance", "power_loss", 0.6 + (-0.025 * level))
 end
 
@@ -117,7 +117,7 @@ function update_strength()
 end
 
 function update_survival()
-    --deprecated
+    db.actor.bleeding = skills_stats["survival"].bleed_restore
 end
 
 local rank_table = {

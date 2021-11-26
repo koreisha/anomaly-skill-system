@@ -4,9 +4,12 @@
 			<texture>ui_skills_background</texture>
 		</background>
 		
-		<cap_main x="30" y="10" width="249" height="32" stretch="1">
-			<texture>ui_skills_cap_main</texture>
-		</cap_main>
+		<cap_main_eng x="30" y="10" width="249" height="32" stretch="1">
+			<texture>ui_skills_cap_main_eng</texture>
+		</cap_main_eng>
+		<cap_main_rus x="30" y="10" width="249" height="32" stretch="1">
+			<texture>ui_skills_cap_main_rus</texture>
+		</cap_main_rus>
 
 		<scroll x="20" y="50" width="460" height="448" right_ident="0" left_ident="0" top_indent="0" bottom_indent="0" vert_interval="0" always_show_scroll="0"/>
 		<st x="0" y="0" width="460" height="70"/>
