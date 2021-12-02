@@ -1,0 +1,42 @@
+[endurance]
+max_level = 15
+base_requirement = 750
+
+[endurance_stats]
+speed_modifier = 0.85
+speed_modifier_increment = 0.02
+power_loss = 0.6
+power_loss_increment = -0.025
+functor = haru_skills.update_endurance
+
+[strength]
+max_level = 15
+base_requirement = 750
+
+[strength_stats]
+weight_modifier = 0.5
+weight_modifier_increment = 0.065
+base_weight = 0
+base_weight_increment = 0.025
+melee_damage = 0.85
+melee_damage_increment = 0.5
+functor = haru_skills.update_strength
+
+[survival]
+max_level = 15
+base_requirement = 750
+
+[survival_stats]
+resistance = 1.25
+resistance_increment = - 0.035
+bleed_restore = 0
+bleed_restore_increment = 0.00005
+functor = haru_skills.update_survival
+
+[scavenging]
+max_level = 15
+base_requirement = 750
+
+[scavenging_stats]
+scavenging_skill = -5
+scavenging_skill_increment = 1.35

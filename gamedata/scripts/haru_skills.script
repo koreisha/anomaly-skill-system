@@ -1,50 +1,16 @@
--- every param in this table NEEDS to be defined
-skills_levels = {
-    ["endurance"]   =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_endurance"},
-    ["strength"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_strength"},
-    ["survival"]    =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_survival"},
-    ["scavenging"]  =   { current_level = 0, experience = 0, max_level = 15, prev_requirement = 0, requirement = 750, base_requirement = 750, functor = "haru_skills.level_up_scavenging"}
-}
--- params in this table are optional and are up to a modder
-skills_stats = {
-    ["endurance"]   =   { speed_modifier = 0.85, power_loss = 0.6 , functor = "haru_skills.update_endurance"},
-    ["strength"]    =   { weight_modifier = 0.5, base_weight = 0, melee_damage = 0.85 , functor = "haru_skills.update_strength"},
-    ["survival"]    =   { resistance = 1.25, bleed_restore = 0, functor = "haru_skills.update_survival" },
-    ["scavenging"]  =   { scavenging_skill = -5 }
-}
-
--- I guess this is not the best way to handle things, but I don't wanna overthink this
-function level_up_endurance()
-    local level = skills_levels.endurance.current_level
-    set_stat("endurance", "speed_modifier", 0.75 + (0.02 * level))
-    set_stat("endurance", "power_loss", 0.6 + (-0.025 * level))
-end
-
-function level_up_strength()
-    local level = skills_levels.strength.current_level
-    set_stat("strength", "weight_modifier", 0.5 + (0.065 * level))
-    set_stat("strength", "melee_damage", 0.85 + (0.025 * level))
-	set_stat("strength", "base_weight", 0.5 * level)
-end
-
-function level_up_survival()
-    local level = skills_levels.survival.current_level
-    set_stat("survival", "resistance", 1.25 + (- 0.035 * level))
-    set_stat("survival", "bleed_restore", 0.00005 * level)
-end
-
-function level_up_scavenging()
-    local level = skills_levels.scavenging.current_level
-    set_stat("scavenging", "scavenging_skill", 1.35 * level)
-end
+skills_ini = ini_file_ex("plugins\\skills\\skills_base.ltx")
+skills_levels = {}
+skills_stats = {}
+skills_increments = {}
+options = {}
 
 local death_ini = nil
 local math_random = math.random
 local sf = string.format
 local always_keep_item = {}
 local gt = game.translate_string
+local string_gsub = string.gsub
 local parse_keys = utils_data.parse_string_keys
-options = {}
 
 function get_max_weight_coef()
     local actor = db.actor
@@ -88,7 +54,7 @@ function creature_on_before_hit(npc, shit, bone_id, flags)
     local wpn = db.actor:active_item()
     if not wpn then return end
     if IsWeapon(wpn) and (IsItem("fake_ammo_wpn",wpn:section())) then
-        increase_skill("strength", shit.power * 30)
+        increase_skill("strength", shit.power * (npc:alive() and 30 or 5))
         shit.power = shit.power * skills_stats["strength"].melee_damage
     end
 end
@@ -106,7 +72,6 @@ function update_endurance()
     
     local speed_modifier = skills_stats["endurance"].speed_modifier
     speed.add_speed("haruka_endurance_modifier_walk", speed_modifier, false, true)
-    speed.add_speed("haruka_endurance_modifier_sprint", speed_modifier, true, true)
 end
 
 function update_strength()
@@ -196,7 +161,11 @@ function level_up_skill(name)
     local base = skill.base_requirement
     local level = skill.current_level
     skills_levels[name].requirement = req + (base + (base * (level * 0.25)))
-    exec(skill.functor)
+    for stat, v in pairs(skills_stats[name]) do
+        if stat ~= "functor" then
+            skills_stats[name][stat] = skills_stats[name][stat] + skills_increments[name][stat]
+        end
+    end
     local msg = parse_keys(gt("st_new_level_" .. name) , colors)
     local header = parse_keys(gt("st_new_level_header"), {
         ["name"] = gt("st_player_skills_" .. name),
@@ -230,28 +199,19 @@ function exec(str)
 		if str[1] and str[2] and _G[ str[1] ] and _G[ str[1] ][ str[2] ] then
 			_G[ str[1] ][ str[2] ]()
 		else
-			print_dbg("Could not exec function %s", str)
+			printf("Could not exec function %s", str)
 		end
 	end
 end
 
 function save_state(m_data)
     m_data.skills_levels = skills_levels
-    m_data.skills_stats  = skills_stats
 end
 
 function load_state(m_data)
-    if m_data.skills_levels then
-        skills_levels = m_data.skills_levels
-    end
-    if m_data.skills_stats then
-        skills_levels = m_data.skills_levels
-    end
-    -- update stats, in case new stat was added or something is wrong
-    for skill, stats in pairs(skills_levels) do
-        exec(stats.functor)
-    end
+    skills_levels = m_data.skills_levels or {}
 end
+
 local get_config = haru_skills_mcm.get_config
 
 function on_option_change()
@@ -259,6 +219,67 @@ function on_option_change()
     options["exp_multiplier_endurance"] = get_config("exp_multiplier_endurance")
     options["exp_multiplier_scavenging"] = get_config("exp_multiplier_scavenging")
     options["exp_multiplier_survival"] = get_config("exp_multiplier_survival")
+end
+
+function on_game_load()
+    death_ini = itms_manager.ini_death
+    local n = death_ini:line_count("keep_items")
+    for i=0,n-1 do
+        local result, id, value	= death_ini:r_line_ex("keep_items",i,"","")
+        if value == "true" then
+            always_keep_item[id] = true
+        end
+    end
+
+    local skills_sections = skills_ini:get_sections(true)
+    for skill, _ in pairs(skills_sections) do
+        local str = str_explode(skill, "_")
+        if str[#str] == "stats" then
+            skills_sections[skill] = nil
+        end
+    end
+    for skill, _ in pairs(skills_sections) do
+        local skills_info = skills_ini:collect_section(skill)
+        for k, v in pairs(skills_info) do
+            skills_info[k] = tonumber(skills_info[k])
+        end
+        if skills_levels[skill] then
+            skills_levels[skill].max_level = skills_info.max_level
+            skills_levels[skill].base_requirement = skills_info.base_requirement
+        else
+            skills_levels[skill] = skills_info
+            skills_levels[skill].current_level = 0
+            skills_levels[skill].prev_requirement = 0
+            skills_levels[skill].experience = 0
+            skills_levels[skill].requirement = skills_levels[skill].base_requirement
+        end
+    end
+
+    for skill, _ in pairs(skills_sections) do
+        local skills_info = skills_ini:collect_section(skill .. "_stats")
+        for k, v in pairs(skills_info) do
+            if k ~= "functor" then
+                skills_info[k] = tonumber(skills_info[k])
+            end
+        end
+        skills_increments[skill] = {}
+        for k, v in pairs(skills_info) do
+            local str = str_explode(k, "_")
+            if str[#str] == "increment" then
+                skills_info[k] = nil
+                skills_increments[skill][string_gsub(k, "_increment", "")] = v
+            end
+        end
+        
+        skills_stats[skill] = {}
+        for stat, val in pairs(skills_info) do
+            if stat ~= "functor" then
+                skills_stats[skill][stat] = val + (skills_increments[skill][stat] * skills_levels[skill].current_level) 
+            else
+                skills_stats[skill][stat] = val
+            end
+        end
+    end
 end
 
 function on_game_start()
@@ -270,17 +291,7 @@ function on_game_start()
     RegisterScriptCallback("load_state", load_state)
     RegisterScriptCallback("actor_on_update", update_stats)
     RegisterScriptCallback("npc_on_death_callback", npc_on_death_callback)
+    RegisterScriptCallback("on_game_load", on_game_load)
     RegisterScriptCallback("on_option_change", on_option_change)
 	on_option_change()
-    RegisterScriptCallback("on_game_load", function()
-        -- same validation as in death manager
-        death_ini = itms_manager.ini_death
-        local n = death_ini:line_count("keep_items")
-        for i=0,n-1 do
-            local result, id, value	= death_ini:r_line_ex("keep_items",i,"","")
-            if value == "true" then
-                always_keep_item[id] = true
-            end
-        end
-    end)
 end

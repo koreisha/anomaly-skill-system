@@ -41,6 +41,11 @@ end
 function UIHarukaSkills:__finalize()
 end
 
+local languages = {
+	["eng"] = true,
+	["rus"] = true
+}
+
 function UIHarukaSkills:InitControls()
     self:SetAutoDelete(true)
     self.xml = CScriptXmlInit()
@@ -49,6 +54,7 @@ function UIHarukaSkills:InitControls()
     self.dialog = xml:InitStatic("skills", self)
     local background = xml:InitStatic("skills:background", self.dialog)
 	local lang = ui_options.curr_localization()
+	lang = languages[lang] and lang or "eng"
     local cap_main = xml:InitStatic("skills:cap_main_" .. lang, self.dialog)
 	scale_ui(cap_main, true, background, "center")
     self.scroll = xml:InitScrollView("skills:scroll", self.dialog)
