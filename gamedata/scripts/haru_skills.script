@@ -6,9 +6,8 @@ options = {}
 
 local death_ini = nil
 local math_random = math.random
-local sf = string.format
 local always_keep_item = {}
-local gt = game.translate_string
+local translate_string = game.translate_string
 local string_gsub = string.gsub
 local parse_keys = utils_data.parse_string_keys
 
@@ -37,14 +36,14 @@ end
 
 function actor_on_jump()
     local coef = get_max_weight_coef()
-    increase_skill("endurance",  clamp((1 - coef) * 10, 0, 999))
-    increase_skill("strength", clamp(coef * 10, 0, 999))
+    increase_skill("endurance",  (1 - coef) * 10)
+    increase_skill("strength", coef * 10)
 end
 
 function actor_on_footstep()
     local coef = get_max_weight_coef()
-    increase_skill("endurance",  clamp((1 - coef) * 0.5, 0, 999))
-    increase_skill("strength", clamp(0.5 * coef, 0, 999))
+    increase_skill("endurance",  1 - coef)
+    increase_skill("strength", 0.5 * coef)
 end
 
 function creature_on_before_hit(npc, shit, bone_id, flags)
@@ -61,7 +60,7 @@ end
 
 function actor_on_before_hit(shit)
     if shit.power < 0 or shit.type == 3 then return end
-    increase_skill("survival", shit.power * 30)
+    increase_skill("survival", shit.power * 100)
     local survival_resistance = skills_stats["survival"].resistance
 	shit.power = shit.power * survival_resistance
 end
@@ -86,18 +85,20 @@ function update_survival()
 end
 
 local rank_table = {
-	["novice"]       = 5,
-    ["trainee"]      = 6,
-    ["experienced"]  = 7,
-    ["professional"] = 8,
-    ["veteran"]      = 9,
-    ["expert"]       = 10,
-    ["master"]       = 15,
-    ["legend"]       = 20
+	["novice"]       = 25,
+    ["trainee"]      = 30,
+    ["experienced"]  = 34,
+    ["professional"] = 40,
+    ["veteran"]      = 45,
+    ["expert"]       = 50,
+    ["master"]       = 65,
+    ["legend"]       = 100
 }
 
 function npc_on_death_callback(victim, who)
-    if who and who:id() ~= 0 then return end
+    if who and who:id() ~= AC_ID then 
+        return 
+    end
     local rank = ranks.get_obj_rank_name(victim)
     if rank and rank_table[rank] then
         increase_skill("scavenging", rank_table[rank])
@@ -136,12 +137,9 @@ function scavanger_effect(npc)
 end
 
 function increase_skill(skill, amount)
+    if amount < 0 then return end
 	local key = "exp_multiplier_" .. skill
     skills_levels[skill].experience = skills_levels[skill].experience + (amount  * options[key])
-end
-
-function set_stat(skill, stat, amount)
-    skills_stats[skill][stat] = amount
 end
 
 local colors = {
@@ -166,9 +164,9 @@ function level_up_skill(name)
             skills_stats[name][stat] = skills_stats[name][stat] + skills_increments[name][stat]
         end
     end
-    local msg = parse_keys(gt("st_new_level_" .. name) , colors)
-    local header = parse_keys(gt("st_new_level_header"), {
-        ["name"] = gt("st_player_skills_" .. name),
+    local msg = parse_keys(translate_string("st_new_level_" .. name) , colors)
+    local header = parse_keys(translate_string("st_new_level_header"), {
+        ["name"] = translate_string("st_player_skills_" .. name),
         ["level"] = level
     })
     db.actor:give_game_news(header, msg, "ui_skills_icon_" .. name, 0, 10000)

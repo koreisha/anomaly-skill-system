@@ -1,6 +1,7 @@
-local gt = game.translate_string
-
+local translate_string = game.translate_string
+local string_format = string.format
 local menu_key = DIK_keys.DIK_K
+local math_floor = math.floor
 
 local K_Timer   = false
 function keybind_pass()
@@ -66,14 +67,11 @@ function UIHarukaSkills:InitControls()
         local level_percent = xml:InitStatic("skills:percent", _st)
 		xml:InitStatic("skills:exp_bar_back", _st)
         local exp_bar = xml:InitProgressBar("skills:exp_bar", _st)
-        local level = stats.current_level
-        local current_exp = stats.experience
-        local required_exp = stats.requirement
         local prev_requirement = stats.prev_requirement
-        local progress = (current_exp - prev_requirement)/(required_exp - prev_requirement)
-        name:TextControl():SetText(string.format("%s - lvl. %s", gt("st_player_skills_" .. skill), level))
+        local progress = (stats.experience - prev_requirement)/(stats.requirement - prev_requirement)
+        name:TextControl():SetText(string_format("%s - lvl. %s", translate_string("st_player_skills_" .. skill), stats.current_level))
         exp_bar:SetProgressPos(progress)
-        level_percent:TextControl():SetText(string.format("%s%%", clamp((math.floor(progress * 100)),0,100)))
+        level_percent:TextControl():SetText(string_format("%s%%", clamp((math_floor(progress * 100)),0,100)))
         self.scroll:AddWindow(_st, true)
         _st:SetAutoDelete(true)
     end
