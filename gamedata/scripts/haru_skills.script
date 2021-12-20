@@ -10,6 +10,9 @@ local always_keep_item = {}
 local translate_string = game.translate_string
 local string_gsub = string.gsub
 local parse_keys = utils_data.parse_string_keys
+local str_explode = str_explode
+local is_empty = is_empty
+local random_key = random_key_table
 
 function get_max_weight_coef()
     local actor = db.actor
@@ -47,7 +50,7 @@ function actor_on_footstep()
 end
 
 function creature_on_before_hit(npc, shit, bone_id, flags)
-    if not (shit.draftsman and shit.draftsman:id() == 0) then
+    if not (shit.draftsman and shit.draftsman:id() == AC_ID) then
 		return 
 	end
     local wpn = db.actor:active_item()
@@ -105,35 +108,59 @@ function npc_on_death_callback(victim, who)
     end
 end
 
+function monster_on_death_callback(victim, who)
+    if who and who:id() ~= AC_ID then 
+        return 
+    end
+    local health = ini_sys:r_string_ex(victim:section(), "Health") or 100
+    increase_skill("scavenging", health * 0.1)
+end
+
+
+function monster_on_loot_init(victim, loot_table)
+    if is_empty(loot_table) then return end
+    local hunting_skill = skills_stats["survival"].hunting_skill
+    local part = random_key(loot_table)
+    if hunting_skill > 0 then
+        if hunting_skill > math_random(100) then
+            loot_table[part].count = loot_table[part].count + 1
+        end
+    else
+        if -hunting_skill > math_random(100) then
+            loot_table[part].count = loot_table[part].count - 1
+        end
+    end
+end
+
 SpawnCosmetics = death_manager.spawn_cosmetics
 
 function death_manager.spawn_cosmetics(npc, npc_id, npc_comm, npc_rank, visual, rand_condition)
     SpawnCosmetics(npc, npc_id, npc_comm, npc_rank, visual, rand_condition)
-    CreateTimeEvent("haruka_scavenger", "haruka_scavanger", 0.1, scavanger_effect, npc)
+    CreateTimeEvent("haruka_scavenger", "haruka_scavanger", 0.01, function()
+        scavanger_effect(npc)
+        return true
+    end)
 end
 
 function scavanger_effect(npc)
     local scavenging_skill = skills_stats["scavenging"].scavenging_skill
     local itr = scavenging_skill > 0 and function(npc, item)
-        if not item and item:section() then 
-            return 
-        end
-        local sec = item:section()
+        local sec = item and item:section() or false
+        if not sec then return end
         if scavenging_skill > math_random(100) and not always_keep_item[sec] then
-            alife_create_item(sec, npc)
+            if not (IsWeapon(item) or IsOutfit(item)) then
+                alife_create_item(sec, npc, {["uses"] = 1, ["cond_r"] = {0.05, 0.2}})
+            end
         end
     end 
     or function(npc, item)
-        if not item and item:section() then 
-            return 
-        end
-        local sec = item:section()
+        local sec = item and item:section() or false
+        if not sec then return end
         if -scavenging_skill > math_random(100) and not always_keep_item[sec] then
             alife_release(item)
         end
     end 
     npc:iterate_inventory(itr, npc)
-	return true
 end
 
 function increase_skill(skill, amount)
@@ -289,6 +316,8 @@ function on_game_start()
     RegisterScriptCallback("load_state", load_state)
     RegisterScriptCallback("actor_on_update", update_stats)
     RegisterScriptCallback("npc_on_death_callback", npc_on_death_callback)
+    RegisterScriptCallback("monster_on_death_callback", monster_on_death_callback)
+    RegisterScriptCallback("monster_on_loot_init", monster_on_loot_init)
     RegisterScriptCallback("on_game_load", on_game_load)
     RegisterScriptCallback("on_option_change", on_option_change)
 	on_option_change()
