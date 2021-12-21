@@ -24,7 +24,7 @@
 		<text>$clr_purple• $clr_whiteScavenging skill improved</text>
 	</string>
 	<string id="st_new_level_survival">
-		<text>$clr_cyan• $clr_whiteResistance improved</text>
+		<text>$clr_cyan• $clr_whiteResistance improved\n$clr_purple• $clr_whiteHunting skill improved</text>
 	</string>
 	<string id="st_new_level_header">
 		<text>$name lvl. $level gained.</text>

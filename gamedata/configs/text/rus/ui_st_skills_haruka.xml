@@ -24,7 +24,7 @@
 		<text>$clr_purple• $clr_whiteНавык мародерства улучшен</text>
 	</string>
 	<string id="st_new_level_survival">
-		<text>$clr_cyan• $clr_whiteПовышена защищенность</text>
+		<text>$clr_cyan• $clr_whiteПовышена защищенность\n$clr_purple• $clr_whiteПовышен навык охоты</text>
 	</string>
 	<string id="st_new_level_header">
 		<text>$name lvl. $level получен.</text>

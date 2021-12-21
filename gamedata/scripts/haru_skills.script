@@ -61,12 +61,19 @@ function creature_on_before_hit(npc, shit, bone_id, flags)
     end
 end
 
+local allowed_hit_types = {
+    [6] = true,
+    [7] = true,
+    [8] = true
+}
+
 function actor_on_before_hit(shit)
-    if shit.power < 0 or shit.type == 3 then return end
-    increase_skill("survival", shit.power * 100)
+    if shit.power < 0 or not (allowed_hit_types[shit.type]) then return end
+    increase_skill("survival", shit.power * 200)
     local survival_resistance = skills_stats["survival"].resistance
 	shit.power = shit.power * survival_resistance
 end
+
 
 function update_endurance()
     local pwb = skills_stats["endurance"].power_loss
