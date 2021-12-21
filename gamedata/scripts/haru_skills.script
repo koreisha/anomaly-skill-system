@@ -120,7 +120,7 @@ function monster_on_death_callback(victim, who)
         return 
     end
     local health = ini_sys:r_string_ex(victim:section(), "Health") or 100
-    increase_skill("scavenging", health * 0.1)
+    increase_skill("survival", health * 0.1)
 end
 
 
@@ -155,7 +155,7 @@ function scavanger_effect(npc)
         local sec = item and item:section() or false
         if not sec then return end
         if scavenging_skill > math_random(100) and not always_keep_item[sec] then
-            if not (IsWeapon(item) or IsOutfit(item)) then
+            if not (IsWeapon(item) or IsOutfit(item) or IsHeadgear(item)) then
                 alife_create_item(sec, npc, {["uses"] = 1, ["cond_r"] = {0.05, 0.2}})
             end
         end
