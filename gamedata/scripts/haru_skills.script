@@ -62,6 +62,7 @@ function creature_on_before_hit(npc, shit, bone_id, flags)
 end
 
 local allowed_hit_types = {
+    [5] = true,
     [6] = true,
     [7] = true,
     [8] = true
