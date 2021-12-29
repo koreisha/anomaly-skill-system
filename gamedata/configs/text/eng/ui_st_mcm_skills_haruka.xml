@@ -17,4 +17,7 @@
      <string id="ui_mcm_menu_skill_system">
         <text>Skills</text>
     </string>
+    <string id="ui_mcm_skill_system_debug">
+        <text>Debug</text>
+    </string>
 </string_table>

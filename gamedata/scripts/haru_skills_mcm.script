@@ -2,10 +2,12 @@ function on_mcm_load()
     op = { id= "skill_system", sh=true ,gr =
 			{
 				{ id = "title"							            , type = "slide", link = "ui_options_slider_gameplay_diff", text = "ui_mcm_skill_system_title", size = {512,50}, spacing = 20 },
+
                 { id = "exp_multiplier_strength"  					, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1},
                 { id = "exp_multiplier_endurance"  					, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1},
                 { id = "exp_multiplier_scavenging"  				, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1},
                 { id = "exp_multiplier_survival"  					, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1},
+                { id = "debug"                                      , type = "check", val = 1, def = false},
 			}
 		 }
     return op
