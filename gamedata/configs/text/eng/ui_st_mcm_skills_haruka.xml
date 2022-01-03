@@ -20,4 +20,13 @@
     <string id="ui_mcm_skill_system_debug">
         <text>Debug</text>
     </string>
+	<string id="ui_mcm_skill_system_ui_keybind">
+        <text>Skills menu key</text>
+    </string>
+	<string id="ui_mcm_skill_system_ui_keybind_desc">
+        <text>Opens the menu where you can check your progress with skills.</text>
+    </string>
+	<string id="ui_mcm_skill_system_update_mcm">
+		<text>Update MCM to see this feature. Key defaults to K</text>
+	</string>
 </string_table>

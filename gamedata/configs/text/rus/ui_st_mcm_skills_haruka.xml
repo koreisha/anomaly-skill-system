@@ -20,4 +20,13 @@
     <string id="ui_mcm_skill_system_debug">
         <text>Debug</text>
     </string>
+	<string id="ui_mcm_skill_system_ui_keybind">
+        <text>Меню навыков</text>
+    </string>
+	<string id="ui_mcm_skill_system_ui_keybind_desc">
+        <text>Открывает меню навыков, в котором вы можете посмотреть свой прогресс.</text>
+    </string>
+    <string id="ui_mcm_skill_system_update_mcm">
+		<text>Обновите МСМ чтобы увидеть эту функцию. Стандартная клавиша - K</text>
+	</string>
 </string_table>

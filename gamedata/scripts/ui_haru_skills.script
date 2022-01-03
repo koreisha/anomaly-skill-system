@@ -2,10 +2,12 @@ local translate_string = game.translate_string
 local string_format = string.format
 local menu_key = DIK_keys.DIK_K
 local math_floor = math.floor
+local get_config = haru_skills_mcm.get_config
+local mcm_keybinds = ui_mcm and ui_mcm.key_hold
+local modifier = 0
 
 local K_Timer   = false
 function keybind_pass()
-	-- I added this to prevent inventory closing after starting because of release keybind
 	if (K_Timer and (time_global() > K_Timer + 200)) or (not K_Timer) then
 		K_Timer = time_global()
 		return true
@@ -15,7 +17,12 @@ end
 
 GUI = nil
 function on_key_release(key)
-    if (key == menu_key) then
+    if key ~= menu_key then return end
+    if not mcm_keybinds then
+        start()
+        return
+    end
+    if ui_mcm.get_mod_key(modifier) then
         start()
     end
 end
@@ -125,6 +132,15 @@ function UIHarukaSkills:Close()
 	Unregister_UI("UIHarukaSkills")
 end
 
+function on_option_change(mcm)
+    if mcm then
+        menu_key = get_config("ui_keybind")
+        modifier = get_config("modifier")
+    end
+end
+
 function on_game_start()
 	RegisterScriptCallback("on_key_release",on_key_release)
+    RegisterScriptCallback("on_option_change", on_option_change)
+    on_option_change(mcm_keybinds)
 end

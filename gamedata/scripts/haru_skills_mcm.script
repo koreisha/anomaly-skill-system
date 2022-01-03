@@ -1,19 +1,32 @@
+local mcm_keybinds = ui_mcm and ui_mcm.key_hold
+
 function on_mcm_load()
     op = { id= "skill_system", sh=true ,gr =
 			{
-				{ id = "title"							            , type = "slide", link = "ui_options_slider_gameplay_diff", text = "ui_mcm_skill_system_title", size = {512,50}, spacing = 20 },
-
-                { id = "exp_multiplier_strength"  					, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1},
-                { id = "exp_multiplier_endurance"  					, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1},
-                { id = "exp_multiplier_scavenging"  				, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1},
-                { id = "exp_multiplier_survival"  					, type = "track", val = 2, min = 0, max = 3, step = 0.1, def = 1},
-                { id = "debug"                                      , type = "check", val = 1, def = false},
+				{ id = "title"						, type = "slide"    , link = "ui_options_slider_gameplay_diff", text = "ui_mcm_skill_system_title", size = {512,50}, spacing = 20 },
+                { id = "ui_keybind"                 , type = "key_bind" , val = 2, def = DIK_keys.DIK_K },
+                { id = "modifier"                   , type = ui_mcm.kb_mod_radio, val = 2, def = 0, hint = "mcm_kb_modifier" , 
+                content = { 
+                    {0,"mcm_kb_mod_none"} , 
+                    {1,"mcm_kb_mod_shift"} , 
+                    {2,"mcm_kb_mod_ctrl"},
+                    {3,"mcm_kb_mod_alt"}
+                }},
+                { id = "desc_mcm"    	 	        , type = "desc"     , text = "ui_mcm_skill_system_update_mcm", clr = {255, 175 ,0 ,0}, precondition = {function() return not mcm_keybinds end}},
+                { id = "line"	     			    , type = "line" },
+                { id = "exp_multiplier_strength"  	, type = "track"    , val = 2, min = 0, max = 3, step = 0.1, def = 1},
+                { id = "exp_multiplier_endurance"  	, type = "track"    , val = 2, min = 0, max = 3, step = 0.1, def = 1},
+                { id = "exp_multiplier_scavenging"  , type = "track"    , val = 2, min = 0, max = 3, step = 0.1, def = 1},
+                { id = "exp_multiplier_survival"  	, type = "track"    , val = 2, min = 0, max = 3, step = 0.1, def = 1},
+                { id = "line"	     			    , type = "line" },
+                { id = "debug"                      , type = "check"    , val = 1, def = false},
 			}
 		 }
     return op
 end
 
 local defaults = {
+    ["ui_keybind"]                  = DIK_keys.DIK_K,
 	["exp_multiplier_strength"]     = 1,
     ["exp_multiplier_endurance"]    = 1,
 	["exp_multiplier_scavenging"]   = 1,
