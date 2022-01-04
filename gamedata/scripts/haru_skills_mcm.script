@@ -35,5 +35,6 @@ local defaults = {
 
 
 function get_config(key)
-    if ui_mcm then return ui_mcm.get("skill_system/"..key) else return defaults[key] end
-end
+    local opt = ui_mcm and ui_mcm.get("skill_system/"..key) 
+    if opt ~= nil then return opt else return defaults[key] end
+ end
