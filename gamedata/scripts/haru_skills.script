@@ -149,9 +149,10 @@ end
 
 function scavanger_effect(npc)
     local rank = ranks.get_obj_rank_name(npc)
-    if (ui_inventory.GUI.mode == "loot" and ui_inventory.GUI.npc_id == npc:id() and rank_table[rank]) then
+    local inventory = ui_inventory.GUI
+    if inventory and inventory.mode == "loot" and inventory.npc_id == npc:id() then
         print_dbg("Actor is looting [%s]", npc:section())
-        increase_skill("scavenging", rank_table[rank])
+        increase_skill("scavenging", rank_table[rank] or 25)
     end
     local scavenging_skill = skills_stats["scavenging"].scavenging_skill
     local itr = scavenging_skill > 0 and function(npc, item)
