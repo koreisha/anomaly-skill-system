@@ -28,3 +28,4 @@ Stats can be checked by pressing K to open skills menu
 - 02-12-2021 - changed how stats are stored and incremented (would make adding new features easier in the future for me and other people), fixed some others erros in the code, fixed speed (finally), fix for crash on localizations other than ru\eng.
 - 21-12-2021 - rebalanced scavenging (fixed the way drops were added, increased exp gained for kills), rebalanced survival and added exp gain for killing mutants, also leveling survival now adds a chance to gain additional part when skinning, when it's survival is low you have chance to lose some parts.
 - 04-01-2022 - added support for MCM keybinds, reworked scavenging exp gain, now it's gained for looting stalkers
+- 28-05-2022 - Ability to move with skills UI open, refactoring, alphabetical stat display, fixes by Utjan.
