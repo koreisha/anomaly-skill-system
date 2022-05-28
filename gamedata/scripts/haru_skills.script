@@ -77,7 +77,9 @@ local allowed_hit_types = {
 }
 
 function actor_on_before_hit(shit)
-    if shit.power < 0 or not (allowed_hit_types[shit.type]) then return end
+    if shit.power < 0 or not (allowed_hit_types[shit.type]) or shit.power > 10 then 
+        return 
+    end
     print_dbg("Actor got hit | power = [%s] | type = [%s]", shit.power, shit.type)
     increase_skill("survival", shit.power * 200)
     local survival_resistance = skills_stats["survival"].resistance
@@ -181,6 +183,11 @@ function increase_skill(skill, amount)
 	local key = "exp_multiplier_" .. skill
     print_dbg("[%s] increased: [%s]", skill, amount)
     skills_levels[skill].experience = skills_levels[skill].experience + (amount  * options[key])
+    -- Credits: Utjan
+    local stats = skills_levels[skill]
+    if (stats.experience > stats.requirement) and (stats.current_level ~= stats.max_level) then
+        haru_skills.level_up_skill(skill)
+    end
 end
 
 local colors = {

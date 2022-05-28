@@ -36,7 +36,9 @@ function start()
 
     if (GUI) and (not GUI:IsShown()) and keybind_pass() then
         GUI:ShowDialog(true)
-        Register_UI("UIHarukaSkills", "ui_haruka_skills")
+		GUI:Reset()
+		_GUIs_keyfree["UIHarukaSkills"] = true
+        Register_UI("UIHarukaSkills", "ui_haru_skills", GUI)
     end
 end
 
@@ -56,6 +58,7 @@ local languages = {
 
 function UIHarukaSkills:InitControls()
     self:SetAutoDelete(true)
+	self:SetWndRect(Frect():set(0,0,1024,768)) -- Credits: Utjan
     self.xml = CScriptXmlInit()
     local xml = self.xml
     xml:ParseFile("ui_haruka_skills.xml")
@@ -67,21 +70,32 @@ function UIHarukaSkills:InitControls()
 	scale_ui(cap_main, true, background, "center")
     self.scroll = xml:InitScrollView("skills:scroll", self.dialog)
     self.scroll:Clear()
+	self.skills = {}
     local skills_levels = haru_skills.skills_levels
-    for skill, stats in pairs(skills_levels) do
+    for skill, stats in spairs(skills_levels) do
         local _st = xml:InitStatic("skills:st", nil)
-        local name = xml:InitStatic("skills:name", _st)
-        local level_percent = xml:InitStatic("skills:percent", _st)
 		xml:InitStatic("skills:exp_bar_back", _st)
-        local exp_bar = xml:InitProgressBar("skills:exp_bar", _st)
-        local prev_requirement = stats.prev_requirement
-        local progress = (stats.experience - prev_requirement)/(stats.requirement - prev_requirement)
-        name:TextControl():SetText(string_format("%s - lvl. %s", translate_string("st_player_skills_" .. skill), stats.current_level))
-        exp_bar:SetProgressPos(progress)
-        level_percent:TextControl():SetText(string_format("%s%%", clamp((math_floor(progress * 100)),0,100)))
+		self.skills[skill] = {}
+		self.skills[skill].exp_bar = xml:InitProgressBar("skills:exp_bar", _st)
+		self.skills[skill].name = xml:InitStatic("skills:name", _st)
+		self.skills[skill].level_percent = xml:InitStatic("skills:percent", _st)
         self.scroll:AddWindow(_st, true)
         _st:SetAutoDelete(true)
     end
+	self:Reset()
+	self:AllowMovement(true)
+end
+
+function UIHarukaSkills:Reset()
+	local skills_levels = haru_skills.skills_levels
+	for skill, _ in pairs(self.skills) do
+		local stats = skills_levels[skill]
+		local prev_requirement = stats.prev_requirement
+        local progress = (stats.experience - prev_requirement)/(stats.requirement - prev_requirement)
+		self.skills[skill].exp_bar:SetProgressPos(progress)
+		self.skills[skill].name:TextControl():SetText(string_format("%s - lvl. %s", translate_string("st_player_skills_" .. skill), stats.current_level))
+		self.skills[skill].level_percent:TextControl():SetText(string_format("%s%%", clamp((math_floor(progress * 100)),0,100)))
+	end
 end
 
 function UIHarukaSkills:OnKeyboard(dik, keyboard_action)
@@ -128,7 +142,6 @@ end
 function UIHarukaSkills:Close()
 	self:HideDialog()
 	self:Show(false)
-    GUI = nil
 	Unregister_UI("UIHarukaSkills")
 end
 
