@@ -186,7 +186,7 @@ function increase_skill(skill, amount)
     -- Credits: Utjan
     local stats = skills_levels[skill]
     if (stats.experience > stats.requirement) and (stats.current_level ~= stats.max_level) then
-        haru_skills.level_up_skill(skill)
+        level_up_skill(skill)
     end
 end
 
