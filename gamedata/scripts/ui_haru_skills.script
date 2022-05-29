@@ -74,6 +74,7 @@ function UIHarukaSkills:InitControls()
     local skills_levels = haru_skills.skills_levels
     for skill, stats in spairs(skills_levels) do
         local _st = xml:InitStatic("skills:st", nil)
+		xml:InitStatic("skills:icon_skill", _st):InitTexture("ui_skills_icon_"..skill)
 		xml:InitStatic("skills:exp_bar_back", _st)
 		self.skills[skill] = {}
 		self.skills[skill].exp_bar = xml:InitProgressBar("skills:exp_bar", _st)
