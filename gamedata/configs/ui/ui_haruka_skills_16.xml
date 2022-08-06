@@ -1,6 +1,6 @@
 <w>
 	<skills x="256" y="128" width="512" height="512" stretch="1">
-		<background x="0" y="0" width="512" height="512" stretch="1">
+		<background x="0" y="-25" width="512" height="562" stretch="1">
 			<texture>ui_skills_background</texture>
 		</background>
 		
