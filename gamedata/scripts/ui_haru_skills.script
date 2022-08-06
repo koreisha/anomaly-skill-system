@@ -68,11 +68,12 @@ function UIHarukaSkills:InitControls()
 	lang = languages[lang] and lang or "eng"
     local cap_main = xml:InitStatic("skills:cap_main_" .. lang, self.dialog)
 	scale_ui(cap_main, true, background, "center")
+	self.hint_wnd = utils_ui.UIHint(self)
     self.scroll = xml:InitScrollView("skills:scroll", self.dialog)
     self.scroll:Clear()
 	self.skills = {}
     local skills_levels = haru_skills.skills_levels
-    for skill, stats in spairs(skills_levels) do
+    for skill, stats in spairs(skills_levels, function(t,a,b) return translate_string("st_player_skills_" .. tostring(a)) < translate_string("st_player_skills_" .. tostring(b)) end) do
         local _st = xml:InitStatic("skills:st", nil)
 		self.skills[skill] = {}
 		self.skills[skill].icon = xml:InitStatic("skills:icon_skill", _st)
@@ -87,6 +88,20 @@ function UIHarukaSkills:InitControls()
     end
 	self:Reset()
 	self:AllowMovement(true)
+end
+
+function UIHarukaSkills:Update()
+	CUIScriptWnd.Update(self)
+	
+	-- Show hint on hover
+	for skill, v in pairs(self.skills) do
+		if self.skills[skill].icon:IsCursorOverWindow() then
+			self.hint_wnd:Update(translate_string("st_player_skills_hint_" .. skill))
+			return
+		end
+	end
+	
+	self.hint_wnd:Update()
 end
 
 function UIHarukaSkills:Reset()
