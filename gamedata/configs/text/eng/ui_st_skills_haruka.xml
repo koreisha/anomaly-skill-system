@@ -14,13 +14,13 @@
 	<string id="st_player_skills_survival">
 		<text>Survival</text>
 	</string>
-	<string id="st_player_skills_hint_survival">
+	<string id="st_player_skills_hint_scavenging">
 		<text>Grants increased drops from stalkers.\n \nLevels are gained by looting stalkers.</text>
 	</string>
 	<string id="st_player_skills_scavenging">
 		<text>Scavenging</text>
 	</string>
-	<string id="st_player_skills_hint_scavenging">
+	<string id="st_player_skills_hint_survival">
 		<text>Grants increased damage resistance and chance to get additional part when skinning.\n \nLevels are gained by taking damage (only bullets and mutants damage) and killing mutants.</text>
 	</string>
     <string id="st_haruka_skills_main">

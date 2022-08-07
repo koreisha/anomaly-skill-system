@@ -56,6 +56,10 @@ local languages = {
 	["rus"] = true
 }
 
+function sort_by_skill_name(_, a, b)
+	return translate_string("st_player_skills_" .. a) < translate_string("st_player_skills_" .. b)
+end
+
 function UIHarukaSkills:InitControls()
     self:SetAutoDelete(true)
 	self:SetWndRect(Frect():set(0,0,1024,768)) -- Credits: Utjan
@@ -73,9 +77,10 @@ function UIHarukaSkills:InitControls()
     self.scroll:Clear()
 	self.skills = {}
     local skills_levels = haru_skills.skills_levels
-    for skill, stats in spairs(skills_levels, function(t,a,b) return translate_string("st_player_skills_" .. tostring(a)) < translate_string("st_player_skills_" .. tostring(b)) end) do
+    for skill, stats in spairs(skills_levels, sort_by_skill_name) do
         local _st = xml:InitStatic("skills:st", nil)
 		self.skills[skill] = {}
+		self.skills[skill].window = _st
 		self.skills[skill].icon = xml:InitStatic("skills:icon_skill", _st)
 		self.skills[skill].icon:InitTexture("ui_skills_icon_"..skill)
 		scale_ui(self.skills[skill].icon, true)
@@ -95,7 +100,7 @@ function UIHarukaSkills:Update()
 	
 	-- Show hint on hover
 	for skill, v in pairs(self.skills) do
-		if self.skills[skill].icon:IsCursorOverWindow() then
+		if self.skills[skill].window:IsCursorOverWindow() then
 			self.hint_wnd:Update(translate_string("st_player_skills_hint_" .. skill))
 			return
 		end
