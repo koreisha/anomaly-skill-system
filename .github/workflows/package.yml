@@ -28,6 +28,16 @@ jobs:
       - name: Get current date
         id: date
         run: echo "::set-output name=today::$(date +'%Y.%m.%d')"
+      
+        - name: Install artis dependencies and update
+        id: arti_dep
+        run: |
+          cp -r anomaly-dependencies/speed/gamedata .
+          
+      - name: Install demonized dependencies and update
+        id: dem_dep
+        run: |
+          cp -r anomaly-demonized-scripts/weight_script/gamedata .
 
       - name: Zip folder
         run: zip -r $RELEASE_NAME.zip gamedata README *.md
