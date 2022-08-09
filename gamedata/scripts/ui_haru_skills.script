@@ -110,6 +110,30 @@ function UIHarukaSkills:Update()
 	self.hint_wnd:Update()
 end
 
+local val_conditions = {
+	[">"]  = function(a, b) return a > b end,
+	["<"]  = function(a, b) return a < b end,
+	[">="] = function(a, b) return a >= b end,
+	["<="] = function(a, b) return a <= b end
+}
+
+function get_val_string(stat, val, t, def)
+	if is_empty(t) then return def end
+	for _, str in pairs(t) do
+		str = str_explode(str, ",")
+		if (val_conditions[str[2]](val, tonumber(str[3]))) then
+			return str[1]
+		end
+	end
+	return def
+end
+
+function get_stats_func_value(file, func, ...)
+    if file and func and _G[file] and _G[file][func] then
+        return _G[file][func](...)
+    end
+end
+
 function UIHarukaSkills:BuildDescription(skill)
 	local hint = translate_string("st_player_skills_hint_" .. skill)
 	local _stats = haru_skills.skills_stats[skill]
@@ -119,49 +143,44 @@ function UIHarukaSkills:BuildDescription(skill)
 	end
 	
 	if (ini_descr:section_exist(skill)) then
-		for k, v in pairs(ini_descr:collect_section(skill)) do
+		for stat, stat_sec in pairs(ini_descr:collect_section(skill)) do
 			repeat
-				if (not ini_descr:section_exist(v)) then
-					self.skills[skill].stat_descriptions[k] = parse_keys(translate_string("st_player_stats_descr_" .. k), {["stat"] = _stats[k]})
+				if (not ini_descr:section_exist(stat_sec)) then
+					self.skills[skill].stat_descriptions[stat_sec] = parse_keys(translate_string("st_skills_stats_" .. stat), {["stat"] = _stats[stat]})
 					do break end
 				end
 
-				local functor = ini_descr:r_string_ex(v, "functor")
+				local functor = ini_descr:r_string_ex(stat_sec, "functor")
 				if functor then
 					functor = str_explode(functor, ",")
-					self.skills[skill].stat_descriptions[k] = get_stats_func_value(unpack(functor))
+					functor[#functor + 1] = _stats[stat]
+					self.skills[skill].stat_descriptions[stat_sec] = get_stats_func_value(unpack(functor))
 					do break end
 				end
 
-				local magnitude = ini_descr:r_float_ex(v, "magnitude") or 1
-				local invert = ini_descr:r_bool_ex(v, "invert") or false
-				local val = _stats[k] * magnitude
-				val = invert and -val or val
+				local magnitude = ini_descr:r_float_ex(stat_sec, "magnitude") or 1
+				local val = _stats[stat] * magnitude
 
-				local str = ini_descr:r_string_ex(v, "positive_str")
-				if str then
-					str = val >= 0 and str or ini_descr:r_string_ex(v, "negative_str")
-					val = val < 0 and -val or val
-				else
-					str = "st_player_stats_descr_" .. k
-				end
+				local str = get_val_string(stat, val, {
+					positive = ini_descr:r_string_ex(stat_sec, "positive_str"),
+					negative = ini_descr:r_string_ex(stat_sec,"negative_str")
+				}, ini_descr:r_string_ex(stat_sec, "str") or "st_skills_stats_" .. stat)
 
-				self.skills[skill].stat_descriptions[k] = parse_keys(translate_string(str), {["stat"] = val})
+				val = ini_descr:r_bool_ex(stat_sec, "abs", false) and math.abs(val) or val
+
+				self.skills[skill].stat_descriptions[stat_sec] = parse_keys(translate_string(str), {["stat"] = val})
 			until true
 		end
 	end
 
 	self.skills[skill].description = hint
+	if is_empty(self.skills[skill].stat_descriptions) then return end
 
-	for k, v in pairs(self.skills[skill].stat_descriptions) do
+	self.skills[skill].description = self.skills[skill].description .. translate_string("st_player_skill_stats")
+
+	for k, v in spairs(self.skills[skill].stat_descriptions) do
 		self.skills[skill].description = self.skills[skill].description .. v
 	end
-end
-
-function get_stats_func_value(file, func, ...)
-    if file and func and _G[file] and _G[file][func] then
-        return _G[file][func](...)
-    end
 end
 
 function UIHarukaSkills:Reset()
@@ -235,4 +254,9 @@ function on_game_start()
 	RegisterScriptCallback("on_key_release",on_key_release)
     RegisterScriptCallback("on_option_change", on_option_change)
     on_option_change(mcm_keybinds)
+end
+
+function get_resistance_string(val)
+	return val > 1 and parse_keys(translate_string("st_skills_stats_resistance_negative"), {["stat"] = val}) or
+		parse_keys(translate_string("st_skills_stats_resistance_positive"), {["stat"] = 1 + (1 - val)})
 end

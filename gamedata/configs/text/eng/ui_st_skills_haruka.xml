@@ -30,7 +30,7 @@
 		<text>$clr_green• $clr_whiteStamina consumption improved\n$clr_cyan• $clr_whiteSpeed improved</text>
 	</string>
 	<string id="st_new_level_strength">
-		<text>$clr_red• $clr_whiteMelee damage improved\n$clr_yellow• $clr_whiteCarry weight improved</text>
+		<text>$clr_yellow• $clr_whiteCarry weight improved$clr_red• $clr_whiteMelee damage improved\n</text>
 	</string>
 	<string id="st_new_level_scavenging">
 		<text>$clr_purple• $clr_whiteScavenging skill improved</text>

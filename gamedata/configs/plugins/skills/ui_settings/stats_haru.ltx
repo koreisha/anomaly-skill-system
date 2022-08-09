@@ -1,0 +1,55 @@
+[scavenging]
+scavenging_skill = scavenging_scavenging_skill
+
+[scavenging_scavenging_skill]
+abs = true
+positive_str = st_skills_stats_scavenging_skill_positive, >=, 0 ; string, condition, value
+negative_str = st_skills_stats_scavenging_skill_negative, <, 0
+
+
+[strength]
+weight_modifier = 1_strength_weight_modifer
+base_weight = 2_strength_base_weight
+melee_damage = 3_strength_melee_damage
+
+[1_strength_weight_modifer]
+positive_str = st_skills_stats_weight_modifer_positive, >=, 1 ; string, condition, value
+negative_str = st_skills_stats_weight_modifer_negative, <, 1
+
+[2_strength_base_weight]
+str = st_skills_stats_base_weight
+
+[3_strength_melee_damage]
+positive_str = st_skills_stats_melee_damage_positive, >=, 1 ; string, condition, value
+negative_str = st_skills_stats_melee_damage_negative, <, 1
+
+
+[endurance]
+power_loss = 1_endurance_power_loss
+speed_modifier = 2_endurance_speed_modifier
+
+[1_endurance_power_loss]
+positive_str = st_skills_stats_power_loss_positive, <=, 0.4 ; string, condition, value
+negative_str = st_skills_stats_power_loss_negative, >, 0.4
+
+[2_endurance_speed_modifier]
+positive_str = st_skills_stats_speed_modifier_positive, >=, 1 ; string, condition, value
+negative_str = st_skills_stats_speed_modifier_negative, <, 1
+
+
+[survival]
+resistance = 1_surival_resistance
+bleed_restore = 2_survival_bleed_restore
+hunting_skill = 3_surival_hunting_skill
+
+[1_surival_resistance]
+functor = ui_haru_skills, get_resistance_string
+
+[2_survival_bleed_restore]
+magnitude = 10000
+str = st_skills_stats_bleed_restore
+
+[3_surival_hunting_skill]
+abs = true
+positive_str = st_skills_stats_hunting_skill_positive, >=, 0 ; string, condition, value
+negative_str = st_skills_stats_hunting_skill_negative, <, 0
