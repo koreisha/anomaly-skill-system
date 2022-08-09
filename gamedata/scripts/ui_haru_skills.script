@@ -4,7 +4,9 @@ local menu_key = DIK_keys.DIK_K
 local math_floor = math.floor
 local get_config = haru_skills_mcm.get_config
 local mcm_keybinds = ui_mcm and ui_mcm.key_hold
+local parse_keys = utils_data.parse_string_keys
 local modifier = 0
+local ini_descr = ini_file_ex("plugins\\skills\\ui_settings\\base.ltx")
 
 local K_Timer   = false
 function keybind_pass()
@@ -84,7 +86,6 @@ function UIHarukaSkills:InitControls()
 		self.skills[skill].icon = xml:InitStatic("skills:icon_skill", _st)
 		self.skills[skill].icon:InitTexture("ui_skills_icon_"..skill)
 		scale_ui(self.skills[skill].icon, true)
-		xml:InitStatic("skills:exp_bar_back", _st)
 		self.skills[skill].exp_bar = xml:InitProgressBar("skills:exp_bar", _st)
 		self.skills[skill].name = xml:InitStatic("skills:name", _st)
 		self.skills[skill].level_percent = xml:InitStatic("skills:percent", _st)
@@ -101,12 +102,66 @@ function UIHarukaSkills:Update()
 	-- Show hint on hover
 	for skill, v in pairs(self.skills) do
 		if self.skills[skill].window:IsCursorOverWindow() then
-			self.hint_wnd:Update(translate_string("st_player_skills_hint_" .. skill))
+			self.hint_wnd:Update(self.skills[skill].description)
 			return
 		end
 	end
 	
 	self.hint_wnd:Update()
+end
+
+function UIHarukaSkills:BuildDescription(skill)
+	local hint = translate_string("st_player_skills_hint_" .. skill)
+	local _stats = haru_skills.skills_stats[skill]
+
+	if not self.skills[skill].stat_descriptions then
+		self.skills[skill].stat_descriptions = {}
+	end
+	
+	if (ini_descr:section_exist(skill)) then
+		for k, v in pairs(ini_descr:collect_section(skill)) do
+			repeat
+				if (not ini_descr:section_exist(v)) then
+					self.skills[skill].stat_descriptions[k] = parse_keys(translate_string("st_player_stats_descr_" .. k), {["stat"] = _stats[k]})
+					do break end
+				end
+
+				local functor = ini_descr:r_string_ex(v, "functor")
+				if functor then
+					functor = str_explode(functor, ",")
+					self.skills[skill].stat_descriptions[k] = get_stats_func_value(unpack(functor))
+					do break end
+				end
+
+				local magnitude = ini_descr:r_float_ex(v, "magnitude") or 1
+				local invert = ini_descr:r_bool_ex(v, "invert") or false
+				local val = _stats[k] * magnitude
+				val = invert and -val or val
+
+				local str = ini_descr:r_string_ex(v, "positive_str")
+				if str then
+					str = val >= 0 and str or ini_descr:r_string_ex(v, "negative_str")
+					val = val < 0 and -val or val
+				else
+					str = "st_player_stats_descr_" .. k
+				end
+
+				self.skills[skill].stat_descriptions[k] = parse_keys(translate_string(str), {["stat"] = val})
+			until true
+		end
+	end
+
+	self.skills[skill].description = hint
+
+	for k, v in pairs(self.skills[skill].stat_descriptions) do
+		self.skills[skill].description = self.skills[skill].description .. v
+	end
+end
+
+function get_stats_func_value(file, func, ...)
+    if file and func and _G[file] and _G[file][func] then
+        return _G[file][func](...)
+    end
 end
 
 function UIHarukaSkills:Reset()
@@ -118,6 +173,7 @@ function UIHarukaSkills:Reset()
 		self.skills[skill].exp_bar:SetProgressPos(progress)
 		self.skills[skill].name:TextControl():SetText(string_format("%s - lvl. %s", translate_string("st_player_skills_" .. skill), stats.current_level))
 		self.skills[skill].level_percent:TextControl():SetText(string_format("%s%%", clamp((math_floor(progress * 100)),0,100)))
+		self:BuildDescription(skill)
 	end
 end
 

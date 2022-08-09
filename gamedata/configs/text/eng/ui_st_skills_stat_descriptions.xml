@@ -1,0 +1,8 @@
+<string_table>
+	<string id="st_player_stats_descr_scavenging_skill_positive">
+        <text>\n%c[255,138,43,226]•%c[ui_6] Chance to get extra loot: %c[d_green]$stat%</text>
+    </string>
+    <string id="st_player_stats_descr_scavenging_skill_negative">
+        <text>\n%c[255,138,43,226]•%c[ui_6] Chance to lose loot: %c[d_red]$stat%</text>
+    </string>
+</string_table>

@@ -17,13 +17,13 @@
 		<name x="70" y="2" width="100" height="23" stretch="1">
 			<text r="200" g="200" b="200" font="letterica18" align="l" vert_align="c"/>
 		</name>
-		<exp_bar_back x="70" y="25" width="350" height="20" horz="1" min="0" max="1" stretch="1">
-			<texture>ui_skills_progress_bar_background</texture>
-		</exp_bar_back>
         <exp_bar x="70" y="25" width="350" height="25" horz="1" min="0" max="1" stretch="1">
 		    <progress>
 			    <texture>ui\ui_haruka_skills_bar.dds</texture>
 		    </progress>
+			<background>
+				<texture>ui_skills_progress_bar_background</texture>
+			</background>
         </exp_bar>
 		<percent x="430" y="22" width="40" height="25" stretch="1">
 			<text complex_mode="1" r="200" g="150" b="100" align="l" vert_align="c" font="letterica16"/>
