@@ -31,7 +31,7 @@ jobs:
         id: date
         run: echo "::set-output name=today::$(date +'%Y.%m.%d')"
       
-        - name: Install artis dependencies and update
+      - name: Install artis dependencies and update
         id: arti_dep
         run: |
           cp -r anomaly-dependencies/speed/gamedata .
