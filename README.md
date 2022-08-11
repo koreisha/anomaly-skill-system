@@ -30,4 +30,4 @@ Stats can be checked by pressing K to open skills menu
 - 04-01-2022 - added support for MCM keybinds, reworked scavenging exp gain, now it's gained for looting stalkers
 - 28-05-2022 - Ability to move with skills UI open, refactoring, alphabetical stat display, fixes by Utjan.
 - 30-05-2022 - Display of skill icons in skills GUI by Utjan.
-- 11-08-2022 - Added tooltip with description and a system to add descriptions for stats.
+- 11-08-2022 - Added tooltip with description and a system to add descriptions for stats. Updated UI textures by Maid.
