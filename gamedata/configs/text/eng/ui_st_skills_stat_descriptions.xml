@@ -4,64 +4,77 @@
     </string>
 
     <!-- Scavenging -->
+    <string id="st_player_skills_hint_scavenging">
+		<text>Grants increased drops from stalkers.\n \nLevels are gained by looting stalkers, higher rank stalkers give more exp. \n \n</text>
+	</string>
 	<string id="st_skills_stats_scavenging_skill_positive">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Chance to get extra loot: %c[d_green]$stat%</text>
+        <text>\n%c[255,86,102,255]•%c[ui_6] Chance to get extra loot: %c[d_green]$stat%</text>
     </string>
     <string id="st_skills_stats_scavenging_skill_negative">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Chance to lose loot: %c[d_red]$stat%</text>
+        <text>\n%c[255,86,102,255]•%c[ui_6] Chance to lose loot: %c[d_red]$stat%</text>
     </string>
 
 
     <!-- Strength -->
+    <string id="st_player_skills_hint_strength">
+		<text>Grants increased carry weight and melee damage.\n \nLevels are gained for traveling with heavy loads and fighting with melee. \n \n</text>
+	</string>
+
     <string id="st_skills_stats_weight_modifer_positive">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Carry weight modifier: %c[d_green]x$stat</text>
+        <text>\n%c[255,255,201,86]•%c[ui_6] Carry weight modifier: %c[d_green]x$stat</text>
     </string>
     <string id="st_skills_stats_weight_modifer_negative">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Carry weight modifier: %c[d_red]x$stat</text>
+        <text>\n%c[255,255,201,86]•%c[ui_6] Carry weight modifier: %c[d_red]x$stat</text>
     </string>
 
     <string id="st_skills_stats_melee_damage_positive">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Melee damage modifier: %c[d_green]x$stat</text>
+        <text>\n%c[255,255,201,86]•%c[ui_6] Melee damage modifier: %c[d_green]x$stat</text>
     </string>
     <string id="st_skills_stats_melee_damage_negative">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Melee damage modifier: %c[d_red]x$stat</text>
+        <text>\n%c[255,255,201,86]•%c[ui_6] Melee damage modifier: %c[d_red]x$stat</text>
     </string>
 
     <string id="st_skills_stats_base_weight">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Carry weight bonus: %c[d_green]+$stat.00 kg</text>
+        <text>\n%c[255,255,201,86]•%c[ui_6] Carry weight bonus: %c[d_green]+$stat kg</text>
     </string>
 
     <!-- Survival -->
+    <string id="st_player_skills_hint_survival">
+		<text>Grants increased damage resistance and chance to get additional part when skinning.\n \nLevels are gained by taking damage (only bullets and mutants damage) and skinning mutants, more dangerous mutants give more exp. \n \n</text>
+	</string>
     <string id="st_skills_stats_resistance_positive">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Increased damage reduction by: %c[d_green]x$stat</text>
+        <text>\n%c[255,135,255,86]•%c[ui_6] Increased damage reduction by: %c[d_green]x$stat</text>
     </string>
     <string id="st_skills_stats_resistance_negative">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Increased damage taken by: %c[d_red]x$stat</text>
+        <text>\n%c[255,135,255,86]•%c[ui_6] Increased damage taken by: %c[d_red]x$stat</text>
     </string>
 
     <string id="st_skills_stats_bleed_restore">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Increased bleed reduction by: %c[d_green]$stat%</text>
+        <text>\n%c[255,135,255,86]•%c[ui_6] Increased bleed reduction by: %c[d_green]$stat%</text>
     </string>
 
      <string id="st_skills_stats_hunting_skill_positive">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Chance to get extra mutant part: %c[d_green]$stat%</text>
+        <text>\n%c[255,135,255,86]•%c[ui_6] Chance to get extra mutant part: %c[d_green]$stat%</text>
     </string>
     <string id="st_skills_stats_hunting_skill_negative">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Chance to lose mutant part: %c[d_red]$stat%</text>
+        <text>\n%c[255,135,255,86]•%c[ui_6] Chance to lose mutant part: %c[d_red]$stat%</text>
     </string>
 
     <!-- Endurance -->
+    <string id="st_player_skills_hint_endurance">
+		<text>Grants increased stamina and speed.\n \nLevels are gained by traveling light. \n \n</text>
+	</string>
     <string id="st_skills_stats_power_loss_positive">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Stamina usage modifier: %c[d_green]x$stat</text>
+        <text>\n%c[255,255,86,86]•%c[ui_6] Stamina usage modifier: %c[d_green]x$stat</text>
     </string>
     <string id="st_skills_stats_power_loss_negative">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Stamina usage modifier: %c[d_red]x$stat</text>
+        <text>\n%c[255,255,86,86]•%c[ui_6] Stamina usage modifier: %c[d_red]x$stat</text>
     </string>
 
     <string id="st_skills_stats_speed_modifier_positive">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Speed modifier: %c[d_green]x$stat</text>
+        <text>\n%c[255,255,86,86]•%c[ui_6] Speed modifier: %c[d_green]x$stat</text>
     </string>
     <string id="st_skills_stats_speed_modifier_negative">
-        <text>\n%c[255,138,43,226]•%c[ui_6] Speed modifier: %c[d_red]x$stat</text>
+        <text>\n%c[255,255,86,86]•%c[ui_6] Speed modifier: %c[d_red]x$stat</text>
     </string>
 </string_table>
